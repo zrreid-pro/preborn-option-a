@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Donor;
+use App\Models\Campaign;
+use App\Models\Donation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +18,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            DonorSeeder::class,
+            CampaignSeeder::class,
+            DonationSeeder::class
         ]);
+
+        for ($i = 1; $i <= 3; $i++) {
+            $totalRevenue = DB::table('donations')->where('campaign_id', $i)->sum('amount');
+
+            $campaign = Campaign::find($i);
+
+            $campaign->current_total = $totalRevenue;
+
+            $campaign->save();
+        }
     }
 }
