@@ -9,7 +9,7 @@ class DonationController extends Controller
 {
     public function index() {
         // Gets all the Donations
-        $donations = Donation::orderBy('created_at', 'desc')->get();
+        $donations = Donation::with([ 'donor', 'campaign' ])->orderBy('id', 'desc')->get();
         return $donations;
     }
 
