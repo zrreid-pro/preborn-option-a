@@ -23,8 +23,18 @@ class DonorController extends Controller
         // Returns a form for the user to create a new Donor
     }
 
-    public function store() {
+    public function store(Request $request) {
         // Creates a new Donor from the donor object provided
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:donors',
+            'phone_number' => 'nullable|string'
+        ]);
+
+        Donor::create($validated);
+
+        return 'New donor created.';
+        // return response()->json();
     }
 
     public function update($id) {

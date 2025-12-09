@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Donor;
 use App\Models\Campaign;
 use App\Models\Donation;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +18,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => 'password',
+                'email_verified_at' => now(),
+            ]
+        );
+
         $this->call([
             DonorSeeder::class,
             CampaignSeeder::class,
