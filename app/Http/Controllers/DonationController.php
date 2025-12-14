@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\Enum;
 
 use App\Enums\PaymentMethod;
 use App\Enums\CampaignStatus;
+use App\Jobs\CampaignTotalUpdateJob;
 
 class DonationController extends Controller
 {
@@ -30,10 +31,6 @@ class DonationController extends Controller
         return $donors;
     }
 
-    public function getTotalDonationsByCampaign($campaign_id) {
-        // Gets total Donations made to the Campaign with the provided id
-    }
-
     public function create($donation) {
         // Creates a new Donation from the donation object provided
     }
@@ -44,7 +41,7 @@ class DonationController extends Controller
             $validated = $request->validate([
                 'donor_id' => 'required|exists:donors,id',
                 'campaign_id' => 'nullable|exists:campaigns,id',
-                'amount' => 'required|integer',
+                'amount' => 'required|integer|min:1',
                 'method_enum' => ['required', new Enum(PaymentMethod::class)],
                 'received_at' => 'nullable|date|after_or_equal:today'
             ]);
@@ -58,11 +55,60 @@ class DonationController extends Controller
             // Queue a job to recalculate the Campaign's current total if it was attached to a Campaign
             if($request->campaign_id) {
                 // Add update total job to the queue
+                CampaignTotalUpdateJob::dispatch($request->campaign_id);
             }
 
             // Returns the latest Donation
             $newDonation = Donation::where('donor_id', $request->get('donor_id'))->orderBy('created_at', 'desc')->first();
             return $newDonation;
+        } catch(\Illuminate\Validation\ValidationException $th) {
+            return $th->validator->errors();
+        }
+    }
+
+    public function update($id, Request $request) {
+        // Updates a specific Donation
+        try {
+            $oldDonation = Donation::find($id);
+            $oldCampaignId = $oldDonation->campaign_id;
+            $request->validate([
+                'donor_id' => 'nullable|exists:donors,id',
+                'campaign_id' => 'nullable|exists:campaigns,id',
+                'amount' => 'nullable|integer|min:1',
+                'method_enum' => ['nullable', new Enum(PaymentMethod::class)],
+                'received_at' => 'nullable|date|after_or_equal:today'
+            ]);
+            // It will only update the values it receives
+            if($request->donor_id) {
+                $oldDonation->donor_id = $request->donor_id;
+            }
+            if($request->campaign_id) {
+                $oldDonation->campaign_id = $request->campaign_id;
+            }
+            if($request->amount) {
+                $oldDonation->amount = $request->amount;
+            }
+            if($request->method_enum) {
+                $oldDonation->method_enum = $request->method_enum;
+            }
+            if($request->received_at) {
+                $oldDonation->received_at = $request->received_at;
+            }
+
+            $oldDonation->save();
+
+            // Queue a job to recalculate the Campaign's current total if it was attached to a Campaign
+            if($oldDonation->campaign_id) {
+                if($request->campaign_id !== $oldCampaignId) {
+                    // If the campaign_id changed, both the old and the new Campaign totals need to be updated
+                    CampaignTotalUpdateJob::dispatch($request->campaign_id);
+                    CampaignTotalUpdateJob::dispatch($oldCampaignId);
+                } else {
+                    CampaignTotalUpdateJob::dispatch($oldDonation->campaign_id);
+                }
+            }
+
+            return $oldDonation;
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
         }
@@ -74,6 +120,7 @@ class DonationController extends Controller
         // Queue a job to recalculate the Campaign's current total if it was attached to a Campaign
         if($donation->campaign_id) {
             // Add update total job to the queue
+            CampaignTotalUpdateJob::dispatch($donation->campaign_id);
         }
 
         $donation->delete();

@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class CampaignController extends Controller
 {
+    public static function updateCurrentTotal($id) {
+        // Updates the current_total field on the provided Campaign
+        $campaign = Campaign::withSum('donations', 'amount')->where('id', $id)->first();
+        $campaign->current_total = $campaign->donations_sum_amount;
+        $campaign->save();
+        return $campaign;        
+    }
+
     public function index() {
         // Gets all the Campaigns
         $campaigns = Campaign::orderBy('created_at', 'desc')->get();
@@ -59,15 +67,12 @@ class CampaignController extends Controller
             if($request->name) {
                 $oldCampaign->name = $request->name;
             }
-
             if($request->goal_amount) {
                 $oldCampaign->goal_amount = $request->goal_amount;
             }
-
             if($request->starts_at) {
                 $oldCampaign->starts_at = $request->starts_at;
             }
-
             if($request->ends_at) {
                 $oldCampaign->ends_at = $request->ends_at;
             }

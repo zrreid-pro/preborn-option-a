@@ -57,11 +57,9 @@ class DonorController extends Controller
             if($request->name) {
                 $oldDonor->name = $request->name;
             }
-
             if($request->email) {
                 $oldDonor->email = $request->email;
             }
-
             if($request->phone_number) {
                 $oldDonor->phone_number = $request->phone_number;
             }
