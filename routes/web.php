@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonorController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\EventLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,3 +35,5 @@ Route::get('/donations', [DonationController::class, 'index'])->name('donations.
 Route::put('/donations/update/{id}', [DonationController::class, 'update'])->name('donations.update');
 Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
 Route::delete('/donations/delete/{id}', [DonationController::class, 'delete'])->name('donations.delete');
+
+Route::get('/events', [EventLogController::class, 'index'])->name('events.index');
