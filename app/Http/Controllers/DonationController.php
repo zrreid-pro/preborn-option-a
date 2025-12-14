@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
 
 use App\Enums\PaymentMethod;
-use App\Enums\CampaignStatus;
 use App\Enums\EventType;
 use App\Http\Controllers\EventLogController;
 use App\Jobs\CampaignTotalUpdateJob;
@@ -45,7 +44,7 @@ class DonationController extends Controller
             //  instantaneous like CARD is so the received_at field would be different
             //  than the created_at timestamp field. Therefore it should be nullable.
 
-            Donation::create($validated);
+            $newDonation = Donation::create($validated);
 
             // Queue a job to recalculate the Campaign's current total if it was attached to a Campaign
             if($request->campaign_id) {
@@ -53,12 +52,10 @@ class DonationController extends Controller
                 CampaignTotalUpdateJob::dispatch($request->campaign_id);
             }
 
-            // Returns the latest Donation
-            $newDonation = Donation::where('donor_id', $request->get('donor_id'))->orderBy('created_at', 'desc')->first();
-
             // Log Event to table
             EventLogController::logEvent($newDonation->id, EventType::CREATE);
 
+            // Returns the latest Donation
             return $newDonation;
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();

@@ -14,7 +14,7 @@ Route::get('/token', function() {
     return csrf_token();
 });
 
-Route::get('/test/{id}', [CampaignController::class, 'updateCurrentTotal']);
+Route::get('/test', [CampaignController::class, 'updateStatus']);
 
 Route::get('/donors/topFiveLastThirtyDays', [DonorController::class, 'topFiveLastThirtyDays'])->name('donors.topFiveLastThirtyDays');
 Route::get('/donors/{id}', [DonorController::class, 'show'])->name('donors.show');
