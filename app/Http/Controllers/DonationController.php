@@ -8,6 +8,8 @@ use Illuminate\Validation\Rules\Enum;
 
 use App\Enums\PaymentMethod;
 use App\Enums\CampaignStatus;
+use App\Enums\EventType;
+use App\Http\Controllers\EventLogController;
 use App\Jobs\CampaignTotalUpdateJob;
 
 class DonationController extends Controller
@@ -15,7 +17,6 @@ class DonationController extends Controller
     public function index() {
         // Gets all the Donations
         $donations = Donation::with([ 'donor', 'campaign' ])->orderBy('id', 'desc')->paginate(10);
-        // $donations = Donation::orderBy('created_at', 'desc')->paginate(10);
         return $donations;
     }
 
@@ -23,12 +24,6 @@ class DonationController extends Controller
         // Gets a specific Donation
         $donation = Donation::findOrFail($id);
         return $donation;
-    }
-
-    public function getTotalDonationsByDonor() {
-        // Gets total Donations grouped by Donor in last 30 days
-        $donors = Donation::where('created_at', '>=', now()->subDays(30))->get();
-        return $donors;
     }
 
     public function create($donation) {
@@ -60,6 +55,10 @@ class DonationController extends Controller
 
             // Returns the latest Donation
             $newDonation = Donation::where('donor_id', $request->get('donor_id'))->orderBy('created_at', 'desc')->first();
+
+            // Log Event to table
+            EventLogController::logEvent($newDonation->id, EventType::CREATE);
+
             return $newDonation;
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
@@ -108,6 +107,10 @@ class DonationController extends Controller
                 }
             }
 
+            
+            // Log Event to table
+            EventLogController::logEvent($oldDonation->id, EventType::UPDATE);
+
             return $oldDonation;
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
@@ -122,6 +125,9 @@ class DonationController extends Controller
             // Add update total job to the queue
             CampaignTotalUpdateJob::dispatch($donation->campaign_id);
         }
+
+        // Log Event to table
+        EventLogController::logEvent($id, EventType::DELETE);
 
         $donation->delete();
         return 'Donation Deleted';
