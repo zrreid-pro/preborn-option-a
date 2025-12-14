@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CampaignStatus;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,44 @@ class CampaignController extends Controller
         return $campaign;        
     }
 
+    public static function isActiveWindow($starts_at, $ends_at) {
+        $today = date('Y-m-d');
+        if($starts_at <= $today && $today <= $ends_at) {
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+    public static function updateStatus() {
+        // Calculates the status of each Campaign and updates the value
+        // The complex select query is meant to lower the processing needed by only getting
+        //  the records that will be changing
+        $today = date('Y-m-d');
+        $campaigns = Campaign::where([
+            ['status', '=', CampaignStatus::INACTIVE],
+            ['starts_at', '<=', $today],
+            ['ends_at', '>=', $today]
+        ])->orWhere([
+            ['status', '=', CampaignStatus::ACTIVE],
+            ['ends_at', '<', $today]
+        ])->get();
+
+        foreach($campaigns as $campaign) {
+            if($campaign->starts_at <= $today && $today <= $campaign->ends_at) {
+                $campaign->status = CampaignStatus::ACTIVE;
+            } else {
+                $campaign->status = CampaignStatus::INACTIVE;
+            }
+            $campaign->save();
+        }
+        
+        logger('Campaign Status Update');
+    }
+
     public function index() {
         // Gets all the Campaigns
-        $campaigns = Campaign::orderBy('created_at', 'desc')->get();
+        $campaigns = Campaign::orderBy('created_at', 'desc')->paginate(10);
         return $campaigns;
     }
 
@@ -42,10 +78,16 @@ class CampaignController extends Controller
                 'ends_at' => 'required|date|after:starts_at'
             ]);
 
-            Campaign::create($validated);
+            $newCampaign = Campaign::create($validated);
+
+            if($this->isActiveWindow($newCampaign->starts_at, $newCampaign->ends_at)) {
+                $newCampaign->status = CampaignStatus::ACTIVE;
+            } else {
+                $newCampaign->status = CampaignStatus::INACTIVE;
+            }
+            $newCampaign->save();
 
             // Returns the latest Campaign
-            $newCampaign = Campaign::latest()->first();
             return $newCampaign;
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
@@ -75,6 +117,13 @@ class CampaignController extends Controller
             }
             if($request->ends_at) {
                 $oldCampaign->ends_at = $request->ends_at;
+            }
+            if($request->starts_at || $request->ends_at) {
+                if($this->isActiveWindow($oldCampaign->starts_at, $oldCampaign->ends_at)) {
+                    $oldCampaign->status = CampaignStatus::ACTIVE;
+                } else {
+                    $oldCampaign->status = CampaignStatus::INACTIVE;
+                }
             }
 
             $oldCampaign->save();

@@ -9,7 +9,7 @@ class DonorController extends Controller
 {
     public function index() {
         // Gets all the Donors
-        $donors = Donor::orderBy('created_at', 'desc')->get();
+        $donors = Donor::orderBy('created_at', 'desc')->paginate(10);
         return $donors;
     }
 
