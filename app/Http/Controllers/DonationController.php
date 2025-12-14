@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\Enum;
 
 use App\Enums\PaymentMethod;
 use App\Enums\EventType;
+use App\Exceptions\InactiveCampaignException;
 use App\Http\Controllers\EventLogController;
 use App\Jobs\CampaignTotalUpdateJob;
 
@@ -44,6 +45,10 @@ class DonationController extends Controller
             //  instantaneous like CARD is so the received_at field would be different
             //  than the created_at timestamp field. Therefore it should be nullable.
 
+            if($request->campaign_id && !CampaignController::isActive($request->campaign_id)) {
+                throw new InactiveCampaignException('A Campaign must be active to receive donations.');
+            }
+
             $newDonation = Donation::create($validated);
 
             // Queue a job to recalculate the Campaign's current total if it was attached to a Campaign
@@ -79,6 +84,10 @@ class DonationController extends Controller
                 $oldDonation->donor_id = $request->donor_id;
             }
             if($request->campaign_id) {
+                if(!CampaignController::isActive($request->campaign_id)) {
+                    throw new InactiveCampaignException('A Campaign must be active to receive donations.');
+                }
+
                 $oldDonation->campaign_id = $request->campaign_id;
             }
             if($request->amount) {

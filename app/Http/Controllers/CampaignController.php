@@ -17,12 +17,23 @@ class CampaignController extends Controller
     }
 
     public static function isActiveWindow($starts_at, $ends_at) {
+        // Performs a check to see if the current day falls inbetween the two dates provided
         $today = date('Y-m-d');
         if($starts_at <= $today && $today <= $ends_at) {
                 return true;
             } else {
                 return false;
             }
+    }
+
+    public static function isActive($id) {
+        // Checks to see if the provided campaign has an active status
+        $campaign = Campaign::findOrFail($id);
+        if($campaign->status === CampaignStatus::ACTIVE) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function updateStatus() {
