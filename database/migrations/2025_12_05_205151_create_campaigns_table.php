@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('goal_amount');
-            $table->integer('current_total');
+            $table->integer('current_total')->default(0);
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
             $table->enum('status', [ CampaignStatus::ACTIVE, CampaignStatus::INACTIVE ])->nullable();

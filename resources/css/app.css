@@ -9,3 +9,68 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+.container {
+    margin: auto;
+}
+header {
+    margin: auto;
+}
+
+h1 {
+    font-size: xx-large;
+    font-weight: bolder;
+}
+h2 {
+    font-size: x-large;
+    font-weight: bold;
+}
+h5 {
+    font-size: large;
+    font-weight: bold;
+}
+a {
+    border-radius: 3px;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+}
+label {
+    font-weight: bold;
+}
+input,select {
+    border-radius: 1px;
+    border-color: black;
+    border-width: 1px;
+    padding: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+button, .button {
+    border-radius: 5px;
+    border-color: black;
+    border-width: 1px;
+    padding: 4px;
+    background-color: lightgray;
+}
+button:hover, .button:hover {
+    background-color: black;
+    color: white;
+}
+ul:not(.pagination) {
+    border-radius: 1px;
+    border-color: black;
+    border-width: 1px;
+    padding: 10px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: fit-content;
+}
+ul.pagination {
+    margin-top: 10px;
+}
+li.page-item {
+    display: inline;
+    margin: 0px;
+    border-width: 0;
+}

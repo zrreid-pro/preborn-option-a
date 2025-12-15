@@ -10,7 +10,7 @@ class DonorController extends Controller
     public function index() {
         // Gets all the Donors
         $donors = Donor::orderBy('created_at', 'desc')->paginate(10);
-        return $donors;
+        return view('donors.index', ['donors' => $donors]);
     }
 
     public function show($id) {
@@ -21,6 +21,7 @@ class DonorController extends Controller
 
     public function create() {
         // Returns a form for the user to create a new Donor
+        return view('donors.create');
     }
 
     public function store(Request $request) {
@@ -33,10 +34,8 @@ class DonorController extends Controller
             ]);
 
             Donor::create($validated);
-
-            // Returns the latest Donor
-            $newDonor = Donor::latest()->first();
-            return $newDonor;
+            
+            return redirect()->route('donors.index');
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
         }

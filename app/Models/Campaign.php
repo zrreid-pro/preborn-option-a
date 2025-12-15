@@ -9,7 +9,7 @@ use App\Enums\CampaignStatus;
 
 class Campaign extends Model
 {
-    protected $fillable = [ 'name', 'goal_amount', 'current_total', 'starts_at', 'ends_at' ];
+    protected $fillable = [ 'name', 'goal_amount', 'starts_at', 'ends_at' ];
     protected $casts = [
         'status' => CampaignStatus::class
     ];
