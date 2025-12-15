@@ -151,9 +151,9 @@ class CampaignController extends Controller
         return 'Campaign Deleted';
     }
 
-    public function totalDonated($id) {
-        // Gets the total donated to the given Campaign
-        $campaign = Campaign::find($id);
-        return $campaign;
+    public function totalDonatedPerCampaign() {
+        // Gets the total donated per Campaign
+        $campaigns = Campaign::paginate(10, ['id', 'name', 'goal_amount', 'current_total', 'status', 'starts_at', 'ends_at']);
+        return $campaigns;
     }
 }

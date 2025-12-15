@@ -6,6 +6,6 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <a href="/main" class="button">Log In</a>    
+    <a href="{{ route('main') }}" class="button">Log In</a>    
 </body>
 </html>
