@@ -65,7 +65,7 @@ class CampaignController extends Controller
     public function index() {
         // Gets all the Campaigns
         $campaigns = Campaign::orderBy('created_at', 'desc')->paginate(10);
-        return $campaigns;
+        return view('campaigns.index', ['campaigns' => $campaigns]);
     }
 
     public function show($id) {
@@ -74,8 +74,9 @@ class CampaignController extends Controller
         return $campaign;
     }
 
-    public function create($campaign) {
+    public function create() {
         // Returns a form for the user to create a new Campaign
+        return view('campaigns.create');
     }
 
     public function store(Request $request) {
@@ -84,7 +85,6 @@ class CampaignController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'goal_amount' => 'required|integer|min:0',
-                'current_total' => 'required|integer|min:0|max:0',
                 'starts_at' => 'required|date',
                 'ends_at' => 'required|date|after:starts_at'
             ]);
@@ -98,8 +98,7 @@ class CampaignController extends Controller
             }
             $newCampaign->save();
 
-            // Returns the latest Campaign
-            return $newCampaign;
+            return redirect()->route('campaigns.index');
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
         }

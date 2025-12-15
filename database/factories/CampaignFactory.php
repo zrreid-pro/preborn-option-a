@@ -19,7 +19,6 @@ class CampaignFactory extends Factory
         return [
             'name' => fake()->company(),
             'goal_amount' => 500,
-            'current_total' => 0,
             'starts_at' => fake()->dateTimeBetween('-60 days', '-40 days'),
             'ends_at' => fake()->dateTimeBetween('now', '+3 months')
         ];

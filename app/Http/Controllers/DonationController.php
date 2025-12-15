@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CampaignStatus;
 use App\Models\Donation;
+use App\Models\Donor;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
 
@@ -17,7 +20,7 @@ class DonationController extends Controller
     public function index() {
         // Gets all the Donations
         $donations = Donation::with([ 'donor', 'campaign' ])->orderBy('id', 'desc')->paginate(10);
-        return $donations;
+        return view('donations.index', ['donations' => $donations]);
     }
 
     public function show($id) {
@@ -26,8 +29,12 @@ class DonationController extends Controller
         return $donation;
     }
 
-    public function create($donation) {
+    public function create() {
         // Creates a new Donation from the donation object provided
+        $donors = Donor::all();
+        $campaigns = Campaign::where('status', CampaignStatus::ACTIVE)->get();
+        $methods = [PaymentMethod::CARD, PaymentMethod::CHECK, PaymentMethod::CASH];
+        return view('donations.create', ['donors' => $donors, 'campaigns' => $campaigns, 'methods' => $methods]);
     }
 
     public function store(Request $request) {
@@ -60,8 +67,7 @@ class DonationController extends Controller
             // Log Event to table
             EventLogController::logEvent($newDonation->id, EventType::CREATE);
 
-            // Returns the latest Donation
-            return $newDonation;
+            return redirect()->route('donations.index');
         } catch(\Illuminate\Validation\ValidationException $th) {
             return $th->validator->errors();
         }
