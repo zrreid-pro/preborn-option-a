@@ -6,6 +6,23 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <a href="/main" class="button">Log In</a>    
+    <form action="{{ Route('login.login') }}" method="POST">
+        @csrf
+        <input 
+            type="text"
+            id="name"
+            name="name"
+            value="Tester"
+            hidden
+        >
+        <input 
+            type="password"
+            id="password"
+            name="password"
+            value="password"
+            hidden
+        >
+        <button type="submit">Log In</button>
+    </form>
 </body>
 </html>
