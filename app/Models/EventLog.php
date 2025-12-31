@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventLog extends Model
 {
-    protected $fillable = [ 'donation_id', 'type' ];
+    protected $fillable = ['donation_id', 'type'];
+
     protected $casts = [
-        'type' => EventType::class
+        'type' => EventType::class,
     ];
 
     /** @use HasFactory<\Database\Factories\EventLogFactory> */
     use HasFactory;
 
-    public function donation() {
+    public function donation()
+    {
         return $this->belongsTo(Donation::class);
     }
 }

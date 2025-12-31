@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class InactiveCampaignException extends Exception
 {
@@ -12,7 +12,7 @@ class InactiveCampaignException extends Exception
     {
         return response()->json([
             'error' => true,
-            'message' => $this->getMessage()
+            'message' => $this->getMessage(),
         ], 404);
     }
 }

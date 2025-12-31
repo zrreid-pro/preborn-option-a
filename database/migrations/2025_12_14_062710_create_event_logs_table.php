@@ -1,10 +1,9 @@
 <?php
 
+use App\Enums\EventType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
-use App\Enums\EventType;
 
 return new class extends Migration
 {
@@ -16,7 +15,7 @@ return new class extends Migration
         Schema::create('event_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('donation_id');
-            $table->enum('type', [ EventType::CREATE, EventType::UPDATE, EventType::DELETE ]);
+            $table->enum('type', [EventType::CREATE, EventType::UPDATE, EventType::DELETE]);
             $table->timestamps();
         });
     }

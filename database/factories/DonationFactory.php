@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Donor;
-use App\Models\Campaign;
 use App\Enums\PaymentMethod;
+use App\Models\Campaign;
+use App\Models\Donor;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Donation>
@@ -23,8 +23,8 @@ class DonationFactory extends Factory
             'donor_id' => Donor::inRandomOrder()->first()->id,
             'campaign_id' => Campaign::inRandomOrder()->first()->id,
             'amount' => fake()->numberBetween(1, 5),
-            'method_enum' => fake()->randomElement([ PaymentMethod::CARD, PaymentMethod::CHECK, PaymentMethod::CASH ]),
-            'received_at' => fake()->dateTimeBetween('-30 days')
+            'method_enum' => fake()->randomElement([PaymentMethod::CARD, PaymentMethod::CHECK, PaymentMethod::CASH]),
+            'received_at' => fake()->dateTimeBetween('-30 days'),
         ];
     }
 }
