@@ -1,23 +1,25 @@
-## Set Up
+# Set Up
 Prerequisites: Laravel Herd (PHP 8.4+), Composer, Node 18+ (for front-end or Vite), MySQL or SQLite.
 Quick start (Laravel):
-cd Herd
-git clone https://github.com/zrreid-pro/preborn-option-a.git
-cp .env.example .env
-# adjust .env as needed
-# Change the .env APP_URL to http://preborn-option-a.test
-composer install
-php artisan key:generate
-php artisan migrate
-php artisan db:seed
-npm install
-# This will build the front-end assets, so vite does not have to be running:  
-npm run build
+* cd Herd
+* git clone https://github.com/zrreid-pro/preborn-option-a.git
+* cp .env.example .env
+    * (adjust .env as needed)
 
-## To Run
-composer run dev
+Change the .env APP_URL to http://preborn-option-a.test
+* composer install
+* php artisan key:generate
+* php artisan migrate
+* php artisan db:seed
+* npm install
 
-## Notes
+This will build the front-end assets, so vite does not have to be running:  
+* npm run build
+
+# To Run
+* composer run dev
+
+# Notes
 Forms for the creation POST routes have been included.
 Submitting the forms redirects to a view that runs a GET all route so the results can be seen.
 
