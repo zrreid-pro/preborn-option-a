@@ -1,12 +1,18 @@
 ## Set Up
-Prerequisites: Laravel Herd (PHP 8.2+), Composer, Node 18+ (for front-end or Vite), MySQL or SQLite.
+Prerequisites: Laravel Herd (PHP 8.4+), Composer, Node 18+ (for front-end or Vite), MySQL or SQLite.
 Quick start (Laravel):
+cd Herd
+git clone https://github.com/zrreid-pro/preborn-option-a.git
 cp .env.example .env
+# adjust .env as needed
+# Change the .env APP_URL to http://preborn-option-a.test
+composer install
 php artisan key:generate
 php artisan migrate
 php artisan db:seed
-composer install
-Change the .env APP_URL to http://preborn-option-a.test
+npm install
+# This will build the front-end assets, so vite does not have to be running:  
+npm run build
 
 ## To Run
 composer run dev
