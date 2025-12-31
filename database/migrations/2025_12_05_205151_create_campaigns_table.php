@@ -1,10 +1,9 @@
 <?php
 
+use App\Enums\CampaignStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
-use App\Enums\CampaignStatus;
 
 return new class extends Migration
 {
@@ -20,7 +19,7 @@ return new class extends Migration
             $table->integer('current_total')->default(0);
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
-            $table->enum('status', [ CampaignStatus::ACTIVE, CampaignStatus::INACTIVE ])->nullable();
+            $table->enum('status', [CampaignStatus::ACTIVE, CampaignStatus::INACTIVE])->nullable();
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@ class CampaignFactory extends Factory
             'name' => fake()->company(),
             'goal_amount' => 500,
             'starts_at' => fake()->dateTimeBetween('-60 days', '-40 days'),
-            'ends_at' => fake()->dateTimeBetween('now', '+3 months')
+            'ends_at' => fake()->dateTimeBetween('now', '+3 months'),
         ];
     }
 }

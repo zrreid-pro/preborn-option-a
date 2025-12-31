@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Donor extends Model
 {
-    protected $fillable = [ 'name', 'email', 'phone_number' ];
+    protected $fillable = ['name', 'email', 'phone_number'];
 
     /** @use HasFactory<\Database\Factories\DonorFactory> */
     use HasFactory;
 
-    public function donations() {
+    public function donations()
+    {
         return $this->hasMany(Donation::class);
     }
 }

@@ -1,10 +1,9 @@
 <?php
 
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
-use App\Enums\PaymentMethod;
 
 return new class extends Migration
 {
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->foreignId('donor_id')->constrained();
             $table->foreignId('campaign_id')->nullable();
             $table->integer('amount');
-            $table->enum('method_enum', [ PaymentMethod::CARD, PaymentMethod::CHECK, PaymentMethod::CASH ]);
+            $table->enum('method_enum', [PaymentMethod::CARD, PaymentMethod::CHECK, PaymentMethod::CASH]);
             $table->dateTime('received_at');
             $table->timestamps();
         });

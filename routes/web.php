@@ -1,19 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DonorController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\DonorController;
 use App\Http\Controllers\EventLogController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/main', function() {
+Route::get('/main', function () {
     return view('main');
 })->name('main');
 
-Route::get('/token', function() {
+Route::get('/token', function () {
     return csrf_token();
 });
 
